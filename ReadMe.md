@@ -1,22 +1,44 @@
 # Project Name
 
 ## Description
-[Provide a brief description of your project]
+
+Contains Laboratory Programs and explaination.
 
 ## Table of Contents
+
 - [Installation](#installation)
 - [Usage](#usage)
 - [Contributing](#contributing)
-- [License](#license)
 
 ## Installation
-[Provide instructions on how to install and set up your project]
+
+Run the following command to create a virtual env and activate it
+
+```bash
+python -m venv ./virtualEnv/
+cd vitualEnv
+source bin/activate
+```
+
+To install the packages use the following command
+
+```bash
+pip install requiredPkgName
+```
 
 ## Usage
-[Provide instructions on how to use your project]
+
+1. Can be used for the AI_ML Lab for the course 21AI52 at RVCE
 
 ## Contributing
-[Explain how others can contribute to your project]
 
-## License
-[Specify the license under which your project is distributed]
+Thank you for considering contributing to this project! To ensure a smooth collaboration, please follow these guidelines:
+
+1. Fork the repository and create your branch from `main`.
+2. Make sure your code follows the project's coding style and conventions.
+3. Keep your commits concise and descriptive, following the [Git commit guidelines](https://git-scm.com/book/en/v2/Distributed-Git-Contributing-to-a-Project#_commit_guidelines).
+4. Write clear and comprehensive documentation for any changes or new features.
+5. Test your changes thoroughly and ensure they do not introduce any regressions.
+6. Submit a pull request, clearly explaining the purpose and scope of your changes.
+
+We appreciate your contributions and look forward to your involvement in making this project better!
