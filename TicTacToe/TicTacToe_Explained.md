@@ -1,196 +1,204 @@
+# Code Explained
 
-## Code Explained
+## Intuition
+
+The game is a classic example of a two-player game where one player tries to win by making a line (horizontal, vertical, or diagonal) before the other player does. The AI uses a depth-first search (DFS) strategy to explore all possible moves and chooses the best one.
+
+## Approach
+
+The game is implemented as a class `TicTacToe` with several methods each performing a specific task in the game.
+
+### Step 1: Initialize the board
+
+The `__init__` method initializes the game board as a 3x3 matrix and sets the AI player as 'X'.
+
 ```python
-# Function to print the board
-def print_board(board):
-    for row in board:
-        print(" | ".join(row))
-        print("-" * 9)
+def __init__(self):
+    self.board = [[' ' for _ in range(3)] for _ in range(3)]
+    self.player = 'X'  # AI player
 ```
-This function prints the current state of the Tic-Tac-Toe board. It iterates over each row in the board and prints the elements of the row separated by "|". It also prints a line of "-" after each row to separate the rows visually.
+
+### Step 2: Print the board
+
+The `print_board` method prints the current state of the game board.
 
 ```python
-# Function to check if the game is over
-def is_game_over(board):
+def print_board(self):
+    for row in self.board:
+        print(' | '.join(row))
+        print('-' * 5)
 ```
-This function checks if the game is over. The game is over if there is a winner or if the board is full.
+
+### Step 3: Check if the game is over
+
+The `is_game_over` method checks if there is a winner by checking all rows, columns, and diagonals.
 
 ```python
-    # Check rows
-    for row in board:
-        if row[0] == row[1] == row[2] != " ":
-            return True
+def is_game_over(self):
+    ...
 ```
-This part checks all the rows to see if there is a winner. If all elements in a row are the same (and not empty), it means that player has won.
+
+### Step 4: Accept keyboard input for 'O'
+
+In the `play` method, if it's the human player's turn, the game accepts keyboard input for the player 'O'.
 
 ```python
-    # Check columns
-    for col in range(3):
-        if board[0][col] == board[1][col] == board[2][col] != " ":
-            return True
+if self.player == 'O':
+    ...
 ```
-This part checks all the columns to see if there is a winner. If all elements in a column are the same (and not empty), it means that player has won.
+
+### Step 5: DFS logic to choose the best move
+
+The `dfs` method implements the DFS logic. It recursively checks all possible moves and returns the best move for the AI player.
 
 ```python
-    # Check diagonals
-    if board[0][0] == board[1][1] == board[2][2] != " ":
+def dfs(self, board, depth, player):
+    ...
+```
+
+## Visualization
+
+Here's a simple visualization of the game board after a few moves:
+
+```
+X | O | X
+---------
+O | X |
+---------
+    |   | O
+```
+
+In this state, if it's 'X's turn, the AI will use the `dfs` method to calculate the best move. If it's 'O's turn, the game will wait for the human player's input.
+
+---
+
+---
+
+### Detailed Code explaination.
+
+---
+
+```python
+class TicTacToe:
+    def __init__(self):
+        self.board = [[' ' for _ in range(3)] for _ in range(3)]
+        self.player = 'X'  # AI player
+```
+
+This is the constructor method that gets called when an object of `TicTacToe` is created. It initializes the game board as a 3x3 matrix filled with spaces, representing an empty board. It also sets the first player as 'X', which is the AI player.
+
+```python
+    def print_board(self):
+        for row in self.board:
+            print(' | '.join(row))
+            print('-' * 5)
+```
+
+This method prints the current state of the game board. It iterates over each row of the board and prints the elements separated by '|'. After each row, it prints a line of dashes for visual separation.
+
+```python
+    def is_draw(self):
+        for row in self.board:
+            if ' ' in row:
+                return False
         return True
-    if board[0][2] == board[1][1] == board[2][0] != " ":
-        return True
 ```
-This part checks both the diagonals to see if there is a winner. If all elements in a diagonal are the same (and not empty), it means that player has won.
+
+This method checks if the game is a draw. It iterates over each row of the board and checks if there is any empty space left. If there is no empty space left on the board, it means the game is a draw.
 
 ```python
-    # Check if the board is full
-    for row in board:
-        if " " in row:
-            return False
-    return True
+    def is_game_over(self):
+        for row in self.board:
+            if row.count(row[0]) == len(row) and row[0] != ' ':
+                return row[0]
+        for col in range(len(self.board[0])):
+            check = []
+            for row in self.board:
+                check.append(row[col])
+            if check.count(check[0]) == len(check) and check[0] != ' ':
+                return check[0]
+        if self.board[0][0] == self.board[1][1] == self.board[2][2] != ' ':
+            return self.board[0][0]
+        if self.board[0][2] == self.board[1][1] == self.board[2][0] != ' ':
+            return self.board[0][2]
+        return False
 ```
-This part checks if the board is full. If there is any empty space left on the board, it means the game is not over yet. If the board is full and there is no winner, it means the game is a draw.
+
+This method checks if the game is over, which can be due to a win by either player or a draw. It checks all rows, columns, and diagonals for a win. If any row, column, or diagonal has all 'X' or all 'O', it means the respective player has won.
 
 ```python
-# Function to make a move
-def make_move(board, row, col, player):
-    if board[row][col] == " ":
-        board[row][col] = player
-        return True
-    return False
-```
-This function makes a move on the board. It takes the board, the row and column where the move should be made, and the player ('X' or 'O') as input. If the specified cell on the board is empty, it places the player's mark there and returns True. If the cell is not empty, it returns False.
+    def dfs(self, board, depth, player):
+        winner = self.is_game_over()
+        if winner:
+            if winner == 'X':  # AI wins
+                return {'score': 1}
+            else:  # Human wins
+                return {'score': -1}
+        elif self.is_draw():
+            return {'score': 0}  # Draw
 
-```python
-# Function to undo a move
-def undo_move(board, row, col):
-    board[row][col] = " "
-```
-This function undoes a move. It takes the board and the row and column of the move to be undone as input. It sets the specified cell on the board to be empty.
-
-```python
-# Function to find the best move using DFS
-def find_best_move(board, player):
-    best_score = float("-inf")
-    best_move = None
-
-    for row in range(3):
-        for col in range(3):
-            if board[row][col] == " ":
-                make_move(board, row, col, player)
-                score = minimax(board, 0, False)
-                undo_move(board, row, col)
-
-                if score > best_score:
-                    best_score = score
-                    best_move = (row, col)
-
-    return best_move
-```
-This function finds the best move for the given player using Depth-First Search (DFS). It iterates over each cell on the board. If a cell is empty, it makes a move there, calculates the score of the board using the minimax function, and then undoes the move. If the score of the move is better than the best score found so far, it updates the best score and the best move. After checking all the cells, it returns the best move.
-
-```python
-# Function to evaluate the board
-def evaluate(board):
-```
-This function evaluates the board and returns a score. The score is 1 if 'X' has won, -1 if 'O' has won, and 0 otherwise.
-
-```python
-    # Check rows
-    for row in board:
-        if row[0] == row[1] == row[2] == "X":
-            return 1
-        elif row[0] == row[1] == row[2] == "O":
-            return -1
-```
-This part checks all the rows to see if there is a winner. If 'X' has won, it returns 1. If 'O' has won, it returns -1.
-
-```python
-    # Check columns
-    for col in range(3):
-        if board[0][col] == board[1][col] == board[2][col] == "X":
-            return 1
-        elif board[0][col] == board[1][col] == board[2][col] == "O":
-            return -1
-```
-This part checks all the columns to see if there is a winner. If 'X' has won, it returns 1. If 'O' has won, it returns -1.
-
-```python
-    # Check diagonals
-    if board[0][0] == board[1][1] == board[2][2] == "X":
-        return 1
-    elif board[0][0] == board[1][1] == board[2][2] == "O":
-        return -1
-    if board[0][2] == board[1][1] == board[2][0] == "X":
-        return 1
-    elif board[0][2] == board[1][1] == board[2][0] == "O":
-        return -1
-```
-This part checks both the diagonals to see if there is a winner. If 'X' has won, it returns 1. If 'O' has won, it returns -1.
-
-```python
-    return 0
-```
-If there is no winner, the function returns 0.
-
-```python
-# Function for the minimax algorithm with DFS
-def minimax(board, depth, is_maximizing):
-    if is_game_over(board):
-        return evaluate(board)
-```
-This function implements the minimax algorithm with DFS. It takes the board, the current depth of the search tree, and a boolean indicating whether the current player is maximizing or minimizing as input. If the game is over, it returns the score of the board.
-
-```python
-    if is_maximizing:
-        best_score = float("-inf")
-        for row in range(3):
-            for col in range(3):
-                if board[row][col] == " ":
-                    make_move(board, row, col, "X")
-                    score = minimax(board, depth + 1, False)
-                    undo_move(board, row, col)
-                    best_score = max(score, best_score)
-        return best_score
-```
-If the current player is maximizing, the function initializes the best score to negative infinity. It then iterates over each cell on the board. If a cell is empty, it makes a move there, calculates the score of the board using a recursive call to the minimax function, and then undoes the move. If the score of the move is better than the best score found so far, it updates the best score. After checking all the cells, it returns the best score.
-
-```python
-    else:
-        best_score = float("inf")
-        for row in range(3):
-            for col in range(3):
-                if board[row][col] == " ":
-                    make_move(board, row, col, "O")
-                    score = minimax(board, depth + 1, True)
-                    undo_move(board, row, col)
-                    best_score = min(score, best_score)
-        return best_score
-```
-If the current player is minimizing, the function initializes the best score to positive infinity. It then iterates over each cell on the board. If a cell is empty, it makes a move there, calculates the score of the board using a recursive call to the minimax function, and then undoes the move. If the score of the move is better (i.e., less) than the best score found so far, it updates the best score. After checking all the cells, it returns the best score.
-
-```python
-# Main game loop
-def play_game():
-    board = [[" " for _ in range(3)] for _ in range(3)]
-    player = "X"
-
-    while not is_game_over(board):
-        print_board(board)
-
-        if player == "X":
-            row = int(input("Enter the row (0-2): "))
-            col = int(input("Enter the column (0-2): "))
-            if make_move(board, row, col, player):
-                player = "O"
-            else:
-                print("Invalid move! Try again.")
+        if player == 'X':
+            best = {'score': -float('inf')}
+            symbol = 'X'
         else:
-            print("Computer's turn...")
-            row, col = find_best_move(board, player)
-            make_move(board, row, col, player)
-            player = "X"
+            best = {'score': float('inf')}
+            symbol = 'O'
 
-    print_board(board)
-    winner = evaluate(board)
+        for i in range(3):
+            for j in range(3):
+                if board[i][j] == ' ':
+                    board[i][j] = symbol
+                    score = self.dfs(board, depth + 1, 'O' if player == 'X' else 'X')
+                    board[i][j] = ' '
+                    score['row'] = i
+                    score['col'] = j
+
+                    if player == 'X':
+                        if score['score'] > best['score']:
+                            best = score
+                    else:
+                        if score['score'] < best['score']:
+                            best = score
+        return best
 ```
-This is the main game loop. It initializes an empty board and sets the current player to 'X'. It then
 
+This method implements the depth-first search logic to choose the best move for the AI player. It recursively checks all possible moves and returns the best move. It uses a scoring system where a win by the AI player (X) is +1, a win by the human player (O) is -1, and a draw is 0. The AI player tries to maximize the score, while the human player tries to minimize it.
+
+```python
+    def play(self):
+        while True:
+            self.print_board()
+            winner = self.is_game_over()
+            if winner or self.is_draw():
+                print("Game Over.")
+                if self.is_draw():
+                    print("It's a draw!")
+                else:
+                    print(f"Player {winner} wins!")
+                break
+
+            if self.player == 'X':
+                best_move = self.dfs(self.board, 0, 'X')
+                self.board[best_move['row']][best_move['col']] = 'X'
+            else:
+                while True:
+                    try:
+                        row = int(input("Enter the row number (0-2): "))
+                        col = int(input("Enter the column number (0-2): "))
+                        if self.board[row][col] == ' ':
+                            self.board[row][col] = 'O'
+                            break
+                        else:
+                            print("Invalid move. Try again.")
+                    except (ValueError, IndexError):
+                        print("Invalid input. Please enter numbers between 0 and 2.")
+
+            self.player = 'O' if self.player == 'X' else 'X'
+
+game = TicTacToe()
+game.play()
+```
+
+This is the main game loop. It keeps running until the game is over. In each iteration, it first prints the current state of the board. Then it checks if the game is over or a draw. If so, it prints the result and breaks the loop. If it's the AI player's turn, it calculates the best move using the depth-first search method and makes the move. If it's the human player's turn, it waits for the human player's input and makes the move.
+
+The `game = TicTacToe()` line creates an object of the `TicTacToe` class, and `game.play()` starts the game.
