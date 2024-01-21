@@ -1,148 +1,108 @@
-# Tic-Tac-Toe using DFS
+class TicTacToe:
+    def __init__(self):
+        # Step 1: Initialize the board
+        self.board = [[' ' for _ in range(3)] for _ in range(3)]
+        self.player = 'X'  # AI player
 
-# Function to print the board
-def print_board(board):
-    for row in board:
-        print(" | ".join(row))
-        print("-" * 9)
+    def print_board(self):
+        # Step 2: Print the board
+        for row in self.board:
+            print(' | '.join(row))
+            print('-' * 5)
 
-# Function to check if the game is over
-def is_game_over(board):
-    # Check rows
-    for row in board:
-        if row[0] == row[1] == row[2] != " ":
-            return True
-
-    # Check columns
-    for col in range(3):
-        if board[0][col] == board[1][col] == board[2][col] != " ":
-            return True
-
-    # Check diagonals
-    if board[0][0] == board[1][1] == board[2][2] != " ":
-        return True
-    if board[0][2] == board[1][1] == board[2][0] != " ":
+    def is_draw(self):
+        # Check if the game is a draw
+        for row in self.board:
+            if ' ' in row:
+                return False
         return True
 
-    # Check if the board is full
-    for row in board:
-        if " " in row:
-            return False
-    return True
+    def is_game_over(self):
+        # Step 3: Check if the game is over
+        # Check rows
+        for row in self.board:
+            if row.count(row[0]) == len(row) and row[0] != ' ':
+                return row[0]
+        # Check columns
+        for col in range(len(self.board[0])):
+            check = []
+            for row in self.board:
+                check.append(row[col])
+            if check.count(check[0]) == len(check) and check[0] != ' ':
+                return check[0]
+        # Check diagonals
+        if self.board[0][0] == self.board[1][1] == self.board[2][2] != ' ':
+            return self.board[0][0]
+        if self.board[0][2] == self.board[1][1] == self.board[2][0] != ' ':
+            return self.board[0][2]
+        return False
 
-# Function to make a move
-def make_move(board, row, col, player):
-    if board[row][col] == " ":
-        board[row][col] = player
-        return True
-    return False
+    def dfs(self, board, depth, player):
+        # Step 5: DFS logic to choose the best move
+        winner = self.is_game_over()
+        if winner:
+            if winner == 'X':  # AI wins
+                return {'score': 1}
+            else:  # Human wins
+                return {'score': -1}
+        elif self.is_draw():
+            return {'score': 0}  # Draw
 
-# Function to undo a move
-def undo_move(board, row, col):
-    board[row][col] = " "
-
-# Function to find the best move using DFS
-def find_best_move(board, player):
-    best_score = float("-inf")
-    best_move = None
-
-    for row in range(3):
-        for col in range(3):
-            if board[row][col] == " ":
-                make_move(board, row, col, player)
-                score = minimax(board, 0, False)
-                undo_move(board, row, col)
-
-                if score > best_score:
-                    best_score = score
-                    best_move = (row, col)
-
-    return best_move
-
-# Function to evaluate the board
-def evaluate(board):
-    # Check rows
-    for row in board:
-        if row[0] == row[1] == row[2] == "X":
-            return 1
-        elif row[0] == row[1] == row[2] == "O":
-            return -1
-
-    # Check columns
-    for col in range(3):
-        if board[0][col] == board[1][col] == board[2][col] == "X":
-            return 1
-        elif board[0][col] == board[1][col] == board[2][col] == "O":
-            return -1
-
-    # Check diagonals
-    if board[0][0] == board[1][1] == board[2][2] == "X":
-        return 1
-    elif board[0][0] == board[1][1] == board[2][2] == "O":
-        return -1
-    if board[0][2] == board[1][1] == board[2][0] == "X":
-        return 1
-    elif board[0][2] == board[1][1] == board[2][0] == "O":
-        return -1
-
-    return 0
-
-# Function for the minimax algorithm with DFS
-def minimax(board, depth, is_maximizing):
-    if is_game_over(board):
-        return evaluate(board)
-
-    if is_maximizing:
-        best_score = float("-inf")
-        for row in range(3):
-            for col in range(3):
-                if board[row][col] == " ":
-                    make_move(board, row, col, "X")
-                    score = minimax(board, depth + 1, False)
-                    undo_move(board, row, col)
-                    best_score = max(score, best_score)
-        return best_score
-
-    else:
-        best_score = float("inf")
-        for row in range(3):
-            for col in range(3):
-                if board[row][col] == " ":
-                    make_move(board, row, col, "O")
-                    score = minimax(board, depth + 1, True)
-                    undo_move(board, row, col)
-                    best_score = min(score, best_score)
-        return best_score
-
-# Main game loop
-def play_game():
-    board = [[" " for _ in range(3)] for _ in range(3)]
-    player = "X"
-
-    while not is_game_over(board):
-        print_board(board)
-
-        if player == "X":
-            row = int(input("Enter the row (0-2): "))
-            col = int(input("Enter the column (0-2): "))
-            if make_move(board, row, col, player):
-                player = "O"
-            else:
-                print("Invalid move! Try again.")
+        if player == 'X':
+            best = {'score': -float('inf')}
+            symbol = 'X'
         else:
-            print("Computer's turn...")
-            row, col = find_best_move(board, player)
-            make_move(board, row, col, player)
-            player = "X"
+            best = {'score': float('inf')}
+            symbol = 'O'
 
-    print_board(board)
-    winner = evaluate(board)
-    if winner == 1:
-        print("Congratulations! You won!")
-    elif winner == -1:
-        print("Sorry, you lost!")
-    else:
-        print("It's a draw!")
+        for i in range(3):
+            for j in range(3):
+                if board[i][j] == ' ':
+                    board[i][j] = symbol
+                    score = self.dfs(board, depth + 1, 'O' if player == 'X' else 'X')
+                    board[i][j] = ' '
+                    score['row'] = i
+                    score['col'] = j
 
-# Start the game
-play_game()
+                    if player == 'X':
+                        if score['score'] > best['score']:
+                            best = score
+                    else:
+                        if score['score'] < best['score']:
+                            best = score
+        return best
+
+    def play(self):
+        # Game loop
+        while True:
+            self.print_board()
+            winner = self.is_game_over()
+            if winner or self.is_draw():
+                print("Game Over.")
+                if self.is_draw():
+                    print("It's a draw!")
+                else:
+                    print(f"Player {winner} wins!")
+                break
+
+            if self.player == 'X':
+                best_move = self.dfs(self.board, 0, 'X')
+                self.board[best_move['row']][best_move['col']] = 'X'
+            else:
+                # Step 4: Accept keyboard input for 'O'
+                while True:
+                    try:
+                        row = int(input("Enter the row number (0-2): "))
+                        col = int(input("Enter the column number (0-2): "))
+                        if self.board[row][col] == ' ':
+                            self.board[row][col] = 'O'
+                            break
+                        else:
+                            print("Invalid move. Try again.")
+                    except (ValueError, IndexError):
+                        print("Invalid input. Please enter numbers between 0 and 2.")
+
+            self.player = 'O' if self.player == 'X' else 'X'
+
+game = TicTacToe()
+game.play()
