@@ -1,6 +1,6 @@
 # Contributing Guidlines
 
-Welcome to [Krishnatejaswi S's](https://github.com/KTS-o7)'s AIML LAB code repository,
+Welcome to [Krishnatejaswi S](https://github.com/KTS-o7)'s AIML LAB code repository,
 
 ## Table of Contents
 
