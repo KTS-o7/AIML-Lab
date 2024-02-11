@@ -22,7 +22,7 @@ source ./env/bin/activate
 To install the packages use the following command
 
 ```bash
-pip install requiredPkgName
+pip install -r requirements.txt
 ```
 
 ## Usage
