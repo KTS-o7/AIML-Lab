@@ -15,9 +15,8 @@ Contains Laboratory Programs and explaination.
 Run the following command to create a virtual env and activate it
 
 ```bash
-python -m venv ./virtualEnv/
-cd vitualEnv
-source bin/activate
+python -m venv env
+source ./env/bin/activate
 ```
 
 To install the packages use the following command
