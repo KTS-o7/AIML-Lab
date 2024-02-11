@@ -1,6 +1,5 @@
 from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import classification_report, confusion_matrix
 import numpy as np
 from collections import Counter
 
@@ -48,6 +47,8 @@ y_pred = knn.predict(X_test)
 print("Predictions:", class_names[y_pred])
 
 
+# Optional confusion matrix
+from sklearn.metrics import classification_report, confusion_matrix
 # Print confusion matrix
 print("\nConfusion Matrix:")
 print(confusion_matrix(y_test, y_pred))
