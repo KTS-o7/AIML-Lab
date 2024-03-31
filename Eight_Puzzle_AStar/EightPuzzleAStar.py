@@ -60,12 +60,15 @@ initial_state = np.array([[2, 8, 1], [0, 4, 3], [7, 6, 5]])
 goal_state = np.array([[1, 2, 3], [8, 0, 4], [7, 6, 5]])
 puzzle = Puzzle(initial_state, goal_state)
 solution = puzzle.solve()
+move1 = -1
 if solution is not None:
     moves = []
     while solution is not None:  # Go through parents to get moves
         moves.append(solution.state)
         solution = solution.parent
-    for move in reversed(moves):  # Print moves in correct order
+    for move in reversed(moves): 
+        move1+=1 # Print moves in correct order
         puzzle.print_state(move)
+    print("no of moves: ",move1)
 else:
     print("No solution found.")

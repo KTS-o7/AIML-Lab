@@ -26,13 +26,16 @@ class KNN:
 
     def _predict(self, x):
         # Compute distances between x and all examples in the training set
-        distances = [np.linalg.norm(x - x_train) for x_train in self.X_train]
+        distances = []
+        for x_train in self.X_train:
+            distances.append(np.linalg.norm(x - x_train)) 
         # Sort by distance and return indices of the first k neighbors
         k_indices = np.argsort(distances)[:self.k]
         # Extract the labels of the k nearest neighbor training samples
         k_nearest_labels = [self.y_train[i] for i in k_indices]
         # return the most common class label
         most_common = Counter(k_nearest_labels).most_common(1)
+        #print(most_common)
         return most_common[0][0]
 
 # Create a k-NN classifier with 3 neighbors
@@ -43,7 +46,7 @@ knn.fit(X_train, y_train)
 
 # Predict the response for test dataset
 y_pred = knn.predict(X_test)
-
+print('Accuracy: %.4f' % np.mean(y_pred == y_test))
 print("Predictions:", class_names[y_pred])
 
 
