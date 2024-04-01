@@ -1,97 +1,40 @@
 import numpy as np
+import matplotlib.pyplot as plt
 from sklearn.datasets import load_iris
-from sklearn.model_selection import train_test_split
 
-
-# Load iris dataset
+# Load the Iris dataset
 iris = load_iris()
-X = iris.data
-class_names = iris.target_names
+X = iris.data  # Features (sepal length, sepal width, petal length, petal width)
 
-# Split dataset into training set and test set
-X_train, X_test = train_test_split(X, test_size=0.3, random_state=1)
+def kmeans(X, k):
+    centroids = X[np.random.choice(X.shape[0], k, replace=False)]
 
-class KMeans:
-    def __init__(self, K=3, max_iters=100):
-        self.K = K
-        self.max_iters = max_iters
+    for _ in range(100):
+        distances = np.linalg.norm(X[:, None] - centroids, axis=2)
+        labels = np.argmin(distances, axis=1)
+        centroids = np.array([X[labels == i].mean(axis=0) for i in range(k)])
 
-        # list of sample indices for each cluster
-        self.clusters = [[] for _ in range(self.K)]
-        # mean feature vector for each cluster
-        self.centroids = []
+    return centroids, labels
 
-    def fit(self, X):
-        self.X = X
-        self.n_samples, self.n_features = X.shape
+# Apply custom k-means clustering
+k = 3
+centroids, labels = kmeans(X, k)
 
-        # initialize centroids as random samples
-        random_sample_idxs = np.random.choice(self.n_samples, self.K, replace=False)
-        self.centroids = [self.X[idx] for idx in random_sample_idxs]
+# Define colors for each cluster
+colors = ['r', 'g', 'b']
 
-        # optimization
-        for _ in range(self.max_iters):
-            # update clusters
-            self.clusters = self._create_clusters(self.centroids)
-            # update centroids
-            centroids_old = self.centroids
-            self.centroids = self._get_centroids(self.clusters)
-            # check for convergence
-            if self._is_converged(centroids_old, self.centroids):
-                break
+# Plot the original data points with different colors for each cluster
+for i in range(k):
+    plt.scatter(X[labels == i, 0], X[labels == i, 1], c=colors[i], label=f'Cluster {i+1}')
 
-    def predict(self, X):
-        labels = np.empty(self.n_samples)
+# Plot the final cluster centroids
+plt.scatter(centroids[:, 0], centroids[:, 1], marker='x', c='black', label='Centroids')
 
-        # assign label to each sample
-        for idx, sample in enumerate(X):
-            for cluster_idx, cluster in enumerate(self.clusters):
-                if idx in cluster:
-                    labels[idx] = cluster_idx
-        return labels
-
-    def _get_centroids(self, clusters):
-        centroids = np.zeros((self.K, self.n_features))
-        for cluster_idx, cluster in enumerate(clusters):
-            cluster_mean = np.mean(self.X[cluster], axis=0)
-            centroids[cluster_idx] = cluster_mean
-        return centroids
-
-    def _create_clusters(self, centroids):
-        clusters = [[] for _ in range(self.K)]
-        for idx, sample in enumerate(self.X):
-            centroid_idx = self._closest_centroid(sample, centroids)
-            clusters[centroid_idx].append(idx)
-        return clusters
-
-    def _closest_centroid(self, sample, centroids):
-        distances = np.zeros(self.K)
-        for idx, centroid in enumerate(centroids):
-            distances[idx] = np.linalg.norm(sample - centroid)
-        closest_index = np.argmin(distances)
-        return closest_index
-
-    def _is_converged(self, centroids_old, centroids):
-        distances = np.zeros(self.K)
-        for idx in range(self.K):
-            distances[idx] = np.linalg.norm(centroids_old[idx] - centroids[idx])
-        return sum(distances) == 0
-
-    
-
-# Create a KMeans object
-k = KMeans(K=3, max_iters=100)
-k.fit(X_train)
-
-# Predict the clusters for the data
-y_pred = k.predict(X_train)
-
-# Convert y_pred to int
-y_pred = y_pred.astype(int)
-
-print("Predictions:", class_names[y_pred])
-
-
+plt.title('K-Means Clustering on Iris Dataset')
+plt.xlabel('Sepal Length')
+plt.ylabel('Sepal Width')
+plt.legend()
+plt.show()
 
 
 
