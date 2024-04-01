@@ -24,12 +24,10 @@ class TicTacToe:
             if row.count(row[0]) == len(row) and row[0] != ' ':
                 return row[0]
         # Check columns
-        for col in range(len(self.board[0])):
-            check = []
-            for row in self.board:
-                check.append(row[col])
-            if check.count(check[0]) == len(check) and check[0] != ' ':
-                return check[0]
+        for col in zip(*self.board):
+            if col.count(col[0]) == len(col) and col[0] != ' ':
+                return col[0]
+        
         # Check diagonals
         if self.board[0][0] == self.board[1][1] == self.board[2][2] != ' ':
             return self.board[0][0]
