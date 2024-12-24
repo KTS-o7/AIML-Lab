@@ -39,13 +39,38 @@ Here's how the code would execute these moves:
 # Initial total is 0
 total = 0
 
+# Define the minimax function
+def minimax(total, is_maximizing, alpha, beta):
+    # Base case: If total reaches or exceeds 20, return a high value for winning, low for losing
+    if total >= 20:
+        return 1 if is_maximizing else -1
+
+    if is_maximizing:
+        max_eval = -float('inf')
+        for i in range(1, 4):  # AI can add 1, 2, or 3
+            eval = minimax(total + i, False, alpha, beta)
+            max_eval = max(max_eval, eval)
+            alpha = max(alpha, eval)
+            if beta <= alpha:
+                break
+        return max_eval
+    else:
+        min_eval = float('inf')
+        for i in range(1, 4):  # Human can add 1, 2, or 3
+            eval = minimax(total + i, True, alpha, beta)
+            min_eval = min(min_eval, eval)
+            beta = min(beta, eval)
+            if beta <= alpha:
+                break
+        return min_eval
+
 # Game loop
 while True:
     # Human's turn
-    human_move = int(input("Enter your move (1, 2, or 3): "))  # Let's say the human enters 1
-    total += human_move  # total becomes 1
-    print(f"After your move, total is {total}")  # Prints "After your move, total is 1"
-    if total >= 20:  # The total is not 20 or more, so the game continues
+    human_move = int(input("Enter your move (1, 2, or 3): "))
+    total += human_move
+    print(f"After your move, total is {total}")
+    if total >= 20:
         print("You win!")
         break
 
@@ -53,18 +78,17 @@ while True:
     print("AI is making its move...")
     ai_move = 1
     max_eval = -float('inf')
-    for i in range(1, 4):  # For each possible move (1, 2, or 3)
-        eval = minimax(total + i, False, -float('inf'), float('inf'))  # Call minimax to get the evaluation of the move
-        if eval > max_eval:  # If the evaluation is greater than max_eval, update max_eval and ai_move
+    for i in range(1, 4):
+        eval = minimax(total + i, False, -float('inf'), float('inf'))
+        if eval > max_eval:
             max_eval = eval
             ai_move = i
-    total += ai_move  # Add the AI's move to the total. Let's say the AI adds 3, so total becomes 4
-    print(f"AI adds {ai_move}. Total is {total}")  # Prints "AI adds 3. Total is 4"
-    if total >= 20:  # The total is not 20 or more, so the game continues
+    total += ai_move
+    print(f"AI adds {ai_move}. Total is {total}")
+    if total >= 20:
         print("AI wins!")
         break
 
-# The game continues in this way until the total reaches or exceeds 20
 ```
 
 In this example, the AI wins because the total reaches 20 after the AI's move. The AI uses the Minimax algorithm with Alpha-Beta pruning to decide its moves, always choosing the move that maximizes its score assuming that the human player is also playing optimally.

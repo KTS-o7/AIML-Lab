@@ -27,7 +27,7 @@ pip install -r requirements.txt
 
 ## Usage
 
-1. Can be used for the AI_ML Lab for the course 21AI52 at RVCE
+1. Can be used for the AI_ML Lab for the course 21AI52 and IS353IA
 
 ## Contributing
 

@@ -7,6 +7,7 @@ iris = load_iris()
 X, y = iris.data, iris.target
 class_names = iris.target_names
 
+
 class NaiveBayes:
     def fit(self, X, y):
         self._classes = np.unique(y)

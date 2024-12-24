@@ -17,27 +17,27 @@ class TicTacToe:
                 return False
         return True
 
-    def is_game_over(self):
-        # Step 3: Check if the game is over
+    def is_game_over(self, board=None):
+        if board is None:
+            board = self.board  # Default to the current board state
         # Check rows
-        for row in self.board:
+        for row in board:
             if row.count(row[0]) == len(row) and row[0] != ' ':
                 return row[0]
         # Check columns
-        for col in zip(*self.board):
+        for col in zip(*board):
             if col.count(col[0]) == len(col) and col[0] != ' ':
                 return col[0]
-        
         # Check diagonals
-        if self.board[0][0] == self.board[1][1] == self.board[2][2] != ' ':
-            return self.board[0][0]
-        if self.board[0][2] == self.board[1][1] == self.board[2][0] != ' ':
-            return self.board[0][2]
+        if board[0][0] == board[1][1] == board[2][2] != ' ':
+            return board[0][0]
+        if board[0][2] == board[1][1] == board[2][0] != ' ':
+            return board[0][2]
         return False
 
     def dfs(self, board, depth, player):
         # Step 5: DFS logic to choose the best move
-        winner = self.is_game_over()
+        winner = self.is_game_over(board)
         if winner:
             if winner == 'X':  # AI wins
                 return {'score': 1}
@@ -46,12 +46,8 @@ class TicTacToe:
         elif self.is_draw():
             return {'score': 0}  # Draw
 
-        if player == 'X':
-            best = {'score': -float('inf')}
-            symbol = 'X'
-        else:
-            best = {'score': float('inf')}
-            symbol = 'O'
+        best = {'score': -float('inf')} if player == 'X' else {'score': float('inf')}
+        symbol = 'X' if player == 'X' else 'O'
 
         for i in range(3):
             for j in range(3):
@@ -62,10 +58,10 @@ class TicTacToe:
                     score['row'] = i
                     score['col'] = j
 
-                    if player == 'X':
+                    if player == 'X':  # Maximize for AI
                         if score['score'] > best['score']:
                             best = score
-                    else:
+                    else:  # Minimize for opponent
                         if score['score'] < best['score']:
                             best = score
         return best
@@ -84,6 +80,7 @@ class TicTacToe:
                 break
 
             if self.player == 'X':
+                print("AI is making a move...")
                 best_move = self.dfs(self.board, 0, 'X')
                 self.board[best_move['row']][best_move['col']] = 'X'
             else:
@@ -101,6 +98,7 @@ class TicTacToe:
                         print("Invalid input. Please enter numbers between 0 and 2.")
 
             self.player = 'O' if self.player == 'X' else 'X'
+
 
 game = TicTacToe()
 game.play()

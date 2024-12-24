@@ -1,5 +1,5 @@
 
-## Naive Bayes Classifier
+## Naive Bayes Classifier using Gaussian method
 
 The Naive Bayes classifier is a simple and effective classification algorithm that uses probabilities and Bayes' theorem to predict the class of an instance. The 'naive' part comes from the assumption that all features are independent of each other, which is not always the case in real-world data, but it simplifies the calculations and often works well in practice.
 
